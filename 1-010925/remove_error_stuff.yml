@@ -1,0 +1,19 @@
+- name: Remove Web App stuff
+  hosts: staging_servers
+  become: true
+
+  vars:
+    dest: /var/www/html
+
+  tasks:
+    - name: Find files to delete
+      find:
+        path: "{{ dest }}"
+        patterns: "test"
+      register: files_to_delete
+    
+    - name: Delete all
+      file:
+        path: "{{item.path}}"
+        state: absent
+      loop: "{{files_to_delete.files}}"

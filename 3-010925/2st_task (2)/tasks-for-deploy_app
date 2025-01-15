@@ -1,0 +1,6 @@
+- name: Make in work!
+  become: yes
+  hosts: client2ubuntu
+
+  roles:
+    - role: deploy_app

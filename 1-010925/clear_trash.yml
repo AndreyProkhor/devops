@@ -1,0 +1,19 @@
+- name: Clear Web App Trash
+  hosts: staging_servers
+  become: true
+
+  vars:
+    dest: /var/www
+
+  tasks:
+    - name: Find files to delete
+      find:
+        path: "{{ dest }}"
+        patterns: "*.*"
+      register: files_to_delete
+    
+    - name: Delete all
+      file:
+        path: "{{item.path}}"
+        state: absent
+      loop: "{{files_to_delete.files}}"

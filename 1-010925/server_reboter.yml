@@ -1,0 +1,17 @@
+- name: Reboot all servs
+  hosts: staging_servers
+  become: true
+  
+  tasks:
+    - name: Reboot all
+      shell: sleep 3 && reboot now
+      async: 1
+      poll: 0
+
+    - name: Waiting
+      wait_for:
+        host: "{{ inventory_hostname }}"
+        state: started
+        delay: 5
+        timeout: 40
+      delegate_to: 127.0.0.1

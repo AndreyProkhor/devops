@@ -1,0 +1,16 @@
+- name: Configuring a network
+  become: true
+  hosts: client1ubuntu
+
+  vars:
+    netName: task2
+    netType: bridge
+
+  tasks:
+    - name: Creating a bridge network "{{netName}}"
+      community.docker.docker_network:
+        name: "{{netName}}"
+        driver: "{{netType}}"
+        state:  present
+
+  

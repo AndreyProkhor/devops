@@ -1,0 +1,25 @@
+- name: Create a gitlab-runner
+  become: true
+  hosts: client1archi
+
+  vars:
+    dockerComposeSRC: ./gitlab_runner/docker-compose.yml
+    dockerComposeLocation: /gitlab_runner
+
+  tasks:
+    - name: Create a runner folder
+      file:
+        path: "{{dockerComposeLocation}}"
+        state: directory
+        mode: "0777"
+
+    - name: Copy docker-compose file
+      copy:
+        src: "{{dockerComposeSRC}}"
+        dest: "{{dockerComposeLocation}}"
+        mode: "0777"
+    
+    - name: Build a gitlab-runner container
+      shell:
+        cmd: "sudo docker compose up -d --force-recreate"
+        chdir: "{{dockerComposeLocation}}"

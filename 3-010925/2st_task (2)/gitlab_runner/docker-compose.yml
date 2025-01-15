@@ -1,0 +1,13 @@
+services:
+    gitlab-runner:
+        image: gitlab/gitlab-runner:v17.5.3
+        restart: always
+        privileged: true
+        environment:
+            - DOCKR_HOST=tcp://dind:2375
+        volumes:
+            - ./runner/config:/etc/gitlab-runner:z
+            - ./runner/data/cache:/cache
+            - ./runner/data/hosts:/etc/hosts
+            - ./runner/logs:/var/log/gitlab-runner:z       
+            - /var/run/docker.sock:/var/run/docker.sock

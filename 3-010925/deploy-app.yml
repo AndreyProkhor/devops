@@ -1,0 +1,41 @@
+- name: Deploy task 2 app
+  become: true
+  hosts: client1ubuntu
+
+  vars:
+    projectLocationsrc: /home/a-user/devops/task2/
+    projectLocationdest: /app
+    dockerfileLocation: /app/helloWorld/
+    dockercomposeLocation: /app
+    imageName: task2_app_image:v7
+
+  tasks:
+    - name: Create an app folder
+      file:
+        path: "{{projectLocationdest}}"
+        state: directory
+        mode: "0777"
+
+    - name: Copy a project folder
+      copy:
+        src: "{{projectLocationsrc}}"
+        dest: "{{projectLocationdest}}"
+        mode: "0777"
+
+    - name: Build image
+      community.docker.docker_image:
+        build:
+          path: "{{dockerfileLocation}}"
+        name: "{{imageName}}"
+        source: build
+        state: present 
+        
+    - name: Container build
+      shell:
+        cmd: "sudo docker compose up -d --force-recreate"
+        chdir: "{{dockercomposeLocation}}"
+      # community.docker.docker_compose_v2:
+      #   project_src: "{{dockercomposeLocation}}"
+      #   state: restarted
+      #   recreate: always
+

@@ -1,0 +1,32 @@
+---
+# tasks file for deploy_app
+- name: Create a docker-compose.yml dir
+  file:
+    path: "{{dockerComposeLocation}}"
+    state: directory
+    mode: "0777"
+
+- name: Copy docker-compose file
+  copy:
+    src: "{{dockerComposeFile}}"
+    dest: "{{dockerComposeLocation}}"
+    mode: "0777"
+
+- name: Allow ports
+  ufw:
+    rule: allow
+    port: "{{item}}"
+  loop:
+    - 18888
+    - 5000
+
+ - name: Build a container
+   shell:
+     cmd: "sudo docker network create --driver bridge {{taskNetworkName}}"
+     chdir: "{{dockerComposeLocation}}"
+   ignore_errors: yes
+
+- name: Build a container
+  shell:
+    cmd: "sudo docker compose up -d --force-recreate"
+    chdir: "{{dockerComposeLocation}}"

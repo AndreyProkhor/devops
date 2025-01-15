@@ -1,0 +1,52 @@
+- name: Deploy web-app and restart servers
+  hosts: staging_servers
+  become: yes 
+
+  vars:
+    src_dir: ./MyApp/SimpleWebApp  
+    dest_dir: /var/www/html/test
+    row_dest: /var/www/html/
+
+  tasks:
+    - name: Create folder test
+      file:
+        dest: "{{row_dest}}/test"
+        state: directory
+        mode: '0777'
+        
+    - name: Find files to copy (excluding .j2)
+      find:
+        paths: "{{ src_dir }}"
+        patterns: "*"
+        recurse: yes
+      register: files_to_copy
+
+    - name: Copy to servs
+      copy: 
+        src: "{{ item.path }}"  
+        dest: "{{ dest_dir }}"
+        mode: '0555'
+      loop: "{{ files_to_copy.files | selectattr('path', 'search', '^(?!.*\\.j2$).*') | list }}"
+      notify: 
+        - Restart apache ubuntu
+        - Restart apache arch
+
+    - name: Render and copy stuff
+      template:
+        src: "{{ item }}"
+        dest: "{{ dest_dir }}/index.html"
+        mode: '0555'
+      with_fileglob: "{{ src_dir }}/*.j2"
+
+  handlers:
+    - name: Restart apache ubuntu
+      service: 
+        name: apache2
+        state: restarted
+      when: ansible_os_family == "Debian"
+
+    - name: Restart apache arch
+      service: 
+        name: httpd
+        state: restarted
+      when: ansible_os_family == "Archlinux"

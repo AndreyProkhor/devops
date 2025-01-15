@@ -1,0 +1,10 @@
+- name: Deploy docker on client1ubuntu
+  become: true
+  hosts: client1archi
+  
+  tasks:
+    - name: Copy install_docker.sh to target
+      copy:
+        src: ./install_docker_arch.sh
+        dest: /tmp/install_docker_arch.sh
+        mode: '0777'

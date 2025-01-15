@@ -1,0 +1,24 @@
+- name: Install Apache onUbuntu servers
+  hosts: staging_servers
+  become: yes
+  tasks:
+    - name: Install Apache on Ubuntu
+      apt:
+        name: apache2
+        state: present
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+
+    - name: Install Apache on Archi
+      pacman:
+        name: apache
+        state: present
+        update_cache: yes
+      when: ansible_os_family == 'Archlinux'
+
+    - name: Auto Starup
+      service:
+        name: "{{ 'apache2' if ansible_os_family == 'Debian' else 'httpd' }}"
+        state: started
+        enabled: true
+

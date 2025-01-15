@@ -1,0 +1,30 @@
+stages:
+    - network-build
+    - app-deployment
+
+build-network:
+    stage: network-build
+    tags:
+      - docker
+    script:
+      - echo "Building network ..."
+      - docker network create --driver bridge task2
+    allow_failure: true
+
+rm-container:
+    stage: app-deployment
+    tags:
+      - docker
+    script:
+      - echo "Removing container ..."
+      - docker rm -f task2_app_container
+    allow_failure: true
+
+
+app-depl:
+    stage: app-deployment
+    tags:
+      - docker
+    script:
+      - echo "Deploying app ..."
+      - docker compose up -d --force-recreate

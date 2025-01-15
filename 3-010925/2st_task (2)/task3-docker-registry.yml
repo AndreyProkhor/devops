@@ -1,0 +1,25 @@
+- name: Create a privat docker registry
+  become: true
+  hosts: client1ubuntu
+
+  vars:
+    dockerComposeSRC: ./docker_registry/docker-compose.yml
+    dockerComposeLocation: /dockerRegistry
+
+  tasks:
+    - name: Create a reqistry folder
+      file:
+        path: "{{dockerComposeLocation}}"
+        state: directory
+        mode: "0777"
+
+    - name: Copy docker-compose file
+      copy:
+        src: "{{dockerComposeSRC}}"
+        dest: "{{dockerComposeLocation}}"
+        mode: "0777"
+    
+    - name: Build a registry container
+      shell:
+        cmd: "sudo docker compose up -d --force-recreate"
+        chdir: "{{dockerComposeLocation}}"

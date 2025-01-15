@@ -1,0 +1,50 @@
+- name: Install balanser server NGinx
+  become: true
+  hosts: client2ubuntu
+
+  vars:
+    log_dir_pos: /etc/log/nginx
+    conf_file: /etc/nginx/nginx.conf
+    site_conf_file: ./conf_files/site_file_ubuntu2_client.conf
+
+  tasks:
+    - name: In case of Ubuntu
+      block:
+      
+      - name: Installing NGinX
+        apt:
+          name: nginx
+          state: present
+
+      when: ansible_os_family == 'Debian'
+
+    - name: In case of Arch
+      block:
+      
+      - name: Installing NGinX
+        pacman:
+          name: nginx
+          state: present
+
+      when: ansible_os_family == 'Archlinux'
+
+    - name: Creating log dir
+      file:
+        dest: "{{log_dir_pos}}"
+        state: directory
+        mode: "0777"
+    
+    - name: NGinX.conf configuring
+      copy:
+        src:  "{{site_conf_file}}"
+        dest: "{{conf_file}}"
+        mode: "0777"
+    
+    - name: Nginx startup config
+      service:
+        name: nginx
+        state: started
+        enabled: true
+      
+
+    

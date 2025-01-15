@@ -1,0 +1,23 @@
+[staging_servers]
+client1ubuntu	ansible_host=192.168.1.100
+client2ubuntu   ansible_host=192.168.1.107
+client1archi   	ansible_host=192.168.1.111	
+
+[balansers]
+client1ubuntu	ansible_host=192.168.1.100
+
+[site]
+client2ubuntu   ansible_host=192.168.1.107
+client1archi   	ansible_host=192.168.1.111
+
+[client2ubuntu]
+client2ubuntu   ansible_host=192.168.1.107
+
+[client1archi]
+client1archi   	ansible_host=192.168.1.111
+
+#to do
+
+#[staging_servers:vars]
+#ansible_user = a-user
+#ansible_ssh_private_key = /home/a-user/.ssh/id_rsa.pub

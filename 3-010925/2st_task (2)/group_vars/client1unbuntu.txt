@@ -1,0 +1,2 @@
+ansible_user : a-user
+ansible_ssh_private_key : /home/a-user/.ssh/id_rsa.pub

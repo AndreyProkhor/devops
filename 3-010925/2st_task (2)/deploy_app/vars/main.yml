@@ -1,0 +1,5 @@
+---
+# vars file for deploy_app
+vars:
+  dockerComposeLocation: /dockerComposeDir
+  dockerComposeFile: docker-compose.yml

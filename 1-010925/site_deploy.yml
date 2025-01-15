@@ -1,0 +1,30 @@
+- name: Site deploy
+  become: yes
+  hosts: site
+
+  vars:
+    site_directory: "/var/www-sites/myNGINXsite"
+    ubuntu_src_page: "./site/red/index.html"
+    arch_src_page: "./site/green/index.html" 
+ 
+
+  tasks:
+    - name: Create dir
+      file:
+        dest: "{{site_directory}}"
+        state: "directory"
+        mode: "0755"
+    
+    - name: Copy page on Ubuntu
+      copy:
+        dest: "{{site_directory}}"
+        src:  "{{ubuntu_src_page}}"
+        mode: "0755"
+      when: ansible_os_family == 'Debian'
+
+    - name: Copy page on Arch
+      copy:
+        dest: "{{site_directory}}"
+        src:  "{{arch_src_page}}"
+        mode: "0755"
+      when: ansible_os_family == 'Archlinux'

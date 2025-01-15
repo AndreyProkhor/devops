@@ -1,0 +1,6 @@
+- name: Reboot all servs
+  hosts: staging_servers
+  become: true
+
+  roles:
+    - role: serv-rest

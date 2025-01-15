@@ -1,0 +1,16 @@
+services:
+  task2_app:
+    image: 192.168.1.100:5000/task2_app_image:v7
+    container_name: task2_app_container
+    restart: always
+    ports:
+      - 18888:8080
+    command: "java -jar hello-world-0.0.1-SNAPSHOT.jar"
+    networks:
+      - task2
+
+networks:
+  task2:
+    external: true
+
+
