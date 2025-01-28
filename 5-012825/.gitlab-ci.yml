@@ -1,0 +1,104 @@
+stages:
+    - image-push
+    - setup-runner-stage
+    - app-deployment
+
+### image-push ###
+
+build-image:
+    stage: image-push
+    tags:
+      - image-dialler
+    script:
+      - echo "Building image ..."
+      - docker build -t task2_app_image:v7 .
+      - echo "Tagging image ..."
+      - docker tag task2_app_image:v7 192.168.1.100:5000/task2_app_image:v7
+    allow_failure: true
+
+push-image:
+    stage: image-push
+    tags:
+      - image-dialler
+    script:
+      - echo "Pushing image ..."
+      - docker push 192.168.1.100:5000/task2_app_image:v7
+    allow_failure: true
+
+### setup-runner-stage ###
+
+install-python:
+  tags: 
+    - registry-runner
+  stage: setup-runner-stage
+  script:
+    - whoami
+    - echo "Installing python"
+    - sudo  apt-get update
+    - sudo  apt-get install -y python3
+    - echo "Installed"
+
+install-pip:
+  tags: 
+    - registry-runner
+  stage: setup-runner-stage
+  script:
+    - echo "Installing pip"
+    - sudo  apt-get update
+    - sudo  apt-get install -y python3-pip
+    - echo "Installed"
+
+install-ansible:
+  tags: 
+    - registry-runner
+  stage: setup-runner-stage
+  script:
+    - echo "Installing ansible"
+    - sudo  pip install ansible
+    - echo "Installed"
+
+install-sshpass:
+  tags: 
+    - registry-runner
+  stage: setup-runner-stage
+  script:
+    - echo "Installing sshpass"
+    - sudo  apt-get update
+    - sudo  apt-get install -y sshpass
+    - echo "Installed"
+
+copy-file:
+  tags: 
+    - registry-runner
+  stage: setup-runner-stage
+  script:
+    - echo "Making keys dir"
+    - sudo  mkdir /keys || true
+    - echo "Done"
+
+copy-keys:
+  tags: 
+    - registry-runner
+  stage: setup-runner-stage
+  script:
+    - echo "Copy keys"
+    - sudo cp ./id_rsa /keys/rsa_id
+    - cd /keys
+    - sudo chown gitlab-runner:gitlab-runner /keys 
+    - sudo echo $GITLAB_RUNNER_PUBKEY > rsa_id.pub
+    - sudo chown gitlab-runner:gitlab-runner /keys/rsa_id
+    - echo "Done"
+
+### app-deployment ###
+
+app-deployment:
+    stage: app-deployment
+    tags:
+      - registry-runner
+    script:
+      - echo "Launch ansible role called deploy_app"
+      - cd ansible
+      - ansible-playbook tasks-for-deploy_app-arch.yml --extra-vars "ansible_become_pass=$ROOT_PASSWORD ProjectContainerName=$PROJECT_CONTAINER_NAME password=$ROOT_PASSWORD"
+      - sudo rm /keys/* || true
+      - echo "App deployed"
+

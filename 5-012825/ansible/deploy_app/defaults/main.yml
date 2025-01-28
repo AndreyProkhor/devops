@@ -1,0 +1,5 @@
+---
+# defaults file for deploy_app
+dockerComposeLocation: /dockerComposeDir
+dockerComposeFile: docker-compose.yml
+taskNetworkName: task2
