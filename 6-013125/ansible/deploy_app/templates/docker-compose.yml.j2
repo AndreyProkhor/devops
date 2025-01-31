@@ -1,0 +1,16 @@
+services:
+  task2_app:
+    image: {{ docker_registry }}/{{ image_name }}:{{ image_tag }}
+    container_name: {{ app_container }}
+    restart: always
+    ports:
+      - {{ app_port_ext }}:8080
+    command: "java -jar {{ app_version }}.jar"
+    networks:
+      - {{ network_name }}
+
+networks:
+   {{ network_name }}:
+        external: true
+
+

@@ -1,0 +1,53 @@
+---
+# tasks file for deploy_app
+- name: Create a docker-compose.yml dir
+  file:
+    path: "{{ dockerComposeLocation }}"
+    state: directory
+    mode: "0744"
+
+- name: Render docker-compose file from template
+  template:
+    src: "docker-compose.yml.j2"
+    dest: "{{ dockerComposeLocation }}/docker-compose.yml"
+    mode: "0744"
+  vars:
+    docker_registry: "{{  docker_registry }}"  
+    image_name: "{{ image_name }}"          
+    image_tag: "{{  image_tag }}"        
+    app_container: "{{  app_container }}"   
+    app_port_ext: "{{ app_port_ext }}"                   
+    app_version: "{{  app_version }}" 
+    network_name: "{{ network_name }}"                   
+
+- name: Allow ports
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+  loop:
+    - "{{ app_port_ext }}"
+    - "{{ dr_port_ext }}"
+
+- name: Build a network
+  shell: "sudo docker network create --driver bridge {{ network_name }}"
+  ignore_errors: yes
+
+- name: Down a container
+  shell: "sudo docker down {{ app_container }}"
+  ignore_errors: yes
+
+- name: Login to Docker Registry
+  shell: |
+    echo '{{ dr_password }}' | 
+    sudo docker login {{ docker_registry }} --username {{ dr_username }} --password-stdin
+  args:
+    warn: false
+
+- name: Build a container
+  shell: "sudo docker compose up -d --force-recreate"
+  args:
+    chdir: "{{ dockerComposeLocation }}"
+
+- name: Logout from Docker Registry
+  shell: "sudo docker logout {{ docker_registry }}"
+  ignore_errors: yes
