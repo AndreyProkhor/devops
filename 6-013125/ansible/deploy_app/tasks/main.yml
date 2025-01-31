@@ -32,10 +32,6 @@
   shell: "sudo docker network create --driver bridge {{ network_name }}"
   ignore_errors: yes
 
-- name: Down a container
-  shell: "sudo docker down {{ app_container }}"
-  ignore_errors: yes
-
 - name: Login to Docker Registry
   shell: |
     echo '{{ dr_password }}' | 
