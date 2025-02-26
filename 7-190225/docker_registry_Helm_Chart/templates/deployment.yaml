@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Values.deployment.name}}
+  namespace: {{.Values.namespace}}
+spec:
+  replicas: {{.Values.deployment.replicas}}
+  selector:
+    matchLabels:
+      app: {{.Values.pod.name}}
+  template:
+    metadata:
+      labels:
+        app: {{.Values.pod.name}}
+    spec:
+      containers:
+      - name: {{.Values.container.name}}
+        image: {{.Values.image.name}}:{{.Values.image.tag}}
+        ports:
+        - containerPort: {{.Values.container.port}}
+        env:
+        {{- range .Values.containerEnvs.envs }}
+        - name: {{ .name }}
+          value: {{ .value }}
+        {{- end }}
+        volumeMounts:
+        {{- range .Values.containerEnvs.volumes }}
+        - name: {{.name}}
+          mountPath: {{.mountPath}}
+        {{- end }}
+        {{- range .Values.containerEnvs.secVolumes }}
+        - name: {{.name}}
+          mountPath: {{.mountPath}}
+        {{- end }}
+      volumes:
+      {{- range .Values.containerEnvs.volumes }}
+      - name: {{.name}}
+        persistentVolumeClaim:
+          claimName: {{$.Values.persistentVolumeClaim.name}}
+      {{- end }}
+      - name: {{ .Values.connectionSecret.alias}}
+        secret:
+          secretName:  {{ .Values.connectionSecret.name}}

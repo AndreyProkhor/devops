@@ -1,0 +1,4 @@
+apiVersion: v2
+name: eugenetask
+description: Small Helm Chart
+version: 0.1.0

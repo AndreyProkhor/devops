@@ -1,0 +1,54 @@
+contactInfo:
+  name: NewStuff
+  email: ivansemenovtest1hg@gmail.com
+
+namespace: eugene-task
+
+ingress:
+  name: my-app-ingress
+  host: cat.mykubepao.run.place
+  ingressClass: nginx
+  tlsSecretName: app-tls-ilya-new2
+
+clusterIssuer:
+  name: letsencrypt-ilya
+  privateKeySecretRef:
+    name: letsencrypt-prod-private-key-new
+
+service:
+  name: ilyax-service
+  port: 80
+
+deployment:
+  name: my-app
+  replicaCount: 4
+
+pod:
+  name: my-app
+
+image:
+  registry: www.registrypao.run.place
+  repository: sabsternal/ilyax
+  tag: 0.1.0
+  pullPolicy: IfNotPresent
+
+container:
+  name: site-main
+  port: 80
+
+envSecret:
+  name: my-secret
+  keys:
+    - key: email-sender
+      name: EMAIL_SENDER
+      value: YW5k4LnJ1
+    - key: email-password
+      name: EMAIL_PASSWORD
+      value: bW9ocA==
+    - key: email-ilyax
+      name: EMAIL_ILYAX
+      value: dGFyamWwuY29t
+
+dockerSecret:
+  name: my-docker-secret
+  dockerconfigjson: IHsKICAgICAgICAiYXV0aHMiOiB7CiAgICAgICAgICAid3d3LnJlZ2lzdHJ5cGFvLnJ1bi5wbGFjZSI6IHsKICAgICAgICAgICAgImF1dGggICAgICB9

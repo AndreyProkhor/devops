@@ -1,0 +1,33 @@
+.message {
+    position: fixed; 
+    top: 20%; 
+    left: 50%;
+    transform: translate(-50%, 0); 
+    border-radius: 8px; 
+    z-index: 1000;
+    display: none; 
+    font-size: 1.2rem; 
+    width: 80%; 
+    max-width: 500px;
+    height: fit-content; 
+    text-align: center; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.success {
+    background-color: rgba(60, 170, 97, 0.9);
+    border: 2px solid rgba(60, 170, 97, 1);
+    color: white; 
+}
+
+.error {
+    background-color: rgba(170, 60, 60, 0.9);
+    border: 2px solid rgba(170, 60, 60, 1); 
+    color: white;
+}
+
+.message:hover {
+    transform: translate(-50%, 0) scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); 
+}

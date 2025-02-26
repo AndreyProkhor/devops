@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.persistentVolume.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  capacity:
+    storage: {{ .Values.persistentVolume.storageCapacity }}
+  accessModes:
+    {{- range .Values.persistentVolume.accessModes }}
+    - {{ .mode }}
+    {{- end}}
+  gcePersistentDisk:
+    pdName: {{ .Values.persistentVolume.diskName }}
+    fsType: {{ .Values.persistentVolume.fileSystem }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{.Values.persistentVolumeClaim.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  accessModes:
+  {{- range .Values.persistentVolume.accessModes }}
+  - {{ .mode }}
+  {{- end}}
+  resources:
+    requests:
+      storage: {{.Values.persistentVolumeClaim.requestStorage }}

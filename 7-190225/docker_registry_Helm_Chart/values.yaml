@@ -1,0 +1,76 @@
+contactInfo:
+  name: NewStuff
+  email: lyabakaveadfsfdgfhdgds@gmail.com
+
+namespace: registry-namespace
+
+service:
+  name: registry-service
+  targetPort: 5000
+  port: 5000
+  selector: registry
+  type: ClusterIP
+
+pod:
+  name: registry
+
+deployment:
+  name: registry
+  replicas: 1 
+
+container:
+  name: registry
+  port: 5000
+
+image:
+  name: registry
+  tag: 2
+
+containerEnvs:
+  volumes:
+    - name: registry-storage
+      mountPath: /var/lib/registry
+  secVolumes:
+    - name: registry-auth
+      mountPath: /auth/
+  envs:
+    - name: REGISTRY_AUTH
+      value: "htpasswd"
+    - name: REGISTRY_AUTH_HTPASSWD_REALM
+      value: "Registry Realm"
+    - name: REGISTRY_AUTH_HTPASSWD_PATH
+      value: "/auth/htpasswd"
+
+persistentVolumeClaim:
+  name: registry-pvc
+  accessModes:
+    - mode: ReadWriteOnce
+  requestStorage: 10Gi
+
+persistentVolume:
+  name: registry-pv
+  storageCapacity: 10Gi
+  diskName: eugene-disk
+  fileSystem: ext4
+  accessModes:
+    - mode: ReadWriteOnce
+
+connectionSecret:
+  alias:  registry-auth
+  name: registry-auth-secret
+
+configMap:
+  alias: registry-auth-sm
+  name: registry-auth-map
+
+ingress:
+  name: ingress-registry
+  host: www.registrypao.run.place
+  ingressClass: nginx
+  tlsSecretName: tls-registry-secret-try2
+  bodySize: 200m
+
+clusterIssuer:
+  name: letsencrypt-prod-stuff
+  privateKeySecretRef:
+    name: letsencrypt-prod-private-key-new-gg

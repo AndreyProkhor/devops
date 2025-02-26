@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deployment.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.pod.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.pod.name }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.dockerSecret.name }}
+      containers:
+        - name: {{ .Values.container.name }}
+          image: {{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}
+          env:
+            {{- range .Values.envSecret.keys }}
+            - name: {{ .name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.envSecret.name }}
+                  key: {{ .key }}
+            {{- end }}

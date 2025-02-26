@@ -1,0 +1,4 @@
+apiVersion: v2
+name: docker_registry
+description: Kuber docker registry based gcloud
+version: 0.1.0

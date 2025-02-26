@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.envSecret.name }}
+  namespace: {{ .Values.namespace }}
+type: Opaque
+data:
+  {{- range .Values.envSecret.keys }}
+  {{ .key }}: {{ .value }}
+  {{- end }}
