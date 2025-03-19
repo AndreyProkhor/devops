@@ -67,10 +67,10 @@ ingress:
   name: ingress-registry
   host: www.registrypao.run.place
   ingressClass: nginx
-  tlsSecretName: tls-registry-secret-try2
+  tlsSecretName: tls-registry-secret
   bodySize: 200m
 
 clusterIssuer:
   name: letsencrypt-prod-stuff
   privateKeySecretRef:
-    name: letsencrypt-prod-private-key-new-gg
+    name: letsencrypt-prod-private-key
