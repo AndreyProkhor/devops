@@ -35,20 +35,3 @@ image:
 container:
   name: site-main
   port: 80
-
-envSecret:
-  name: my-secret
-  keys:
-    - key: email-sender
-      name: EMAIL_SENDER
-      value: YW5k4LnJ1
-    - key: email-password
-      name: EMAIL_PASSWORD
-      value: bW9ocA==
-    - key: email-ilyax
-      name: EMAIL_ILYAX
-      value: dGFyamWwuY29t
-
-dockerSecret:
-  name: my-docker-secret
-  dockerconfigjson: IHsKICAgICAgICAiYXV0aHMiOiB7CiAgICAgICAgICAid3d3LnJlZ2lzdHJ5cGFvLnJ1bi5wbGFjZSI6IHsKICAgICAgICAgICAgImF1dGggICAgICB9
